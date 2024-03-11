@@ -2,7 +2,6 @@ package com.example.pocviacepintegration.service
 
 import com.example.pocviacepintegration.controller.request.AddressRequest
 import com.example.pocviacepintegration.controller.response.AddressResponse
-import com.example.pocviacepintegration.dto.AddressDTO
 import com.example.pocviacepintegration.model.entities.AddressEntity
 import org.springframework.http.ResponseEntity
 
