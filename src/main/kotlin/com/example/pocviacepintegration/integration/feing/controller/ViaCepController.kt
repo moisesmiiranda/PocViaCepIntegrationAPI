@@ -1,5 +1,6 @@
 package com.example.pocviacepintegration.integration.feing.controller
 
+import com.example.pocviacepintegration.exceptions.AddressNotFoundException
 import com.example.pocviacepintegration.integration.feing.client.ViaCepClient
 import com.example.pocviacepintegration.integration.feing.response.AddressResponseViaCep
 import org.springframework.beans.factory.annotation.Autowired
@@ -16,7 +17,12 @@ class ViaCepController @Autowired constructor(
 ) {
     @GetMapping("/{cep}")
     fun getAddressFromViaCep(@PathVariable cep: String): ResponseEntity<AddressResponseViaCep> {
-        val response = viaCepService.getCepFromViaCep(cep)
-        return ResponseEntity(response.body, response.statusCode)
+            val response = viaCepService.getCepFromViaCep(cep)
+            if (response.body?.cep == null) {
+                throw AddressNotFoundException(cep)
+            }else{
+                return ResponseEntity(response.body, response.statusCode)
+            }
+
     }
 }
