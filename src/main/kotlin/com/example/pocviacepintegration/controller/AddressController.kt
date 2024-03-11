@@ -7,6 +7,7 @@ import com.example.pocviacepintegration.exceptions.AddressNotFoundException
 import com.example.pocviacepintegration.exceptions.CepFormatException
 import com.example.pocviacepintegration.model.entities.AddressEntity
 import com.example.pocviacepintegration.service.AddressServiceImpl
+import com.example.pocviacepintegration.utils.FormatCep
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.http.HttpStatus
 import org.springframework.http.ResponseEntity
@@ -16,11 +17,12 @@ import org.springframework.web.bind.annotation.*
 @RequestMapping("/api")
 class AddressController @Autowired constructor(
     private val addressService: AddressServiceImpl,
+    private val formatCep: FormatCep
 ) {
     @GetMapping("/{cep}")
     fun getAddressByCep(@PathVariable cep: String): ResponseEntity<AddressResponse> {
         try {
-            return addressService.getAddress(cep)
+            return addressService.getAddress(formatCep.formatCep(cep))
         }catch (addressNotFoundException: AddressNotFoundException){
             throw AddressNotFoundException(cep)
         }
@@ -28,21 +30,11 @@ class AddressController @Autowired constructor(
 
     @PostMapping
     fun createAddress(@RequestBody addressRequest: AddressRequest): ResponseEntity<AddressEntity> {
-       val newAddressRequest =  addressRequest.copy(cep = formatCep(addressRequest.cep))
+       val newAddressRequest =  addressRequest.copy(cep = formatCep.formatCep(addressRequest.cep))
         try {
             return addressService.saveAddress(newAddressRequest)
         }catch (adressAlreadyExistsException: AddressAlreadyExistsException){
             throw AddressAlreadyExistsException(newAddressRequest.cep)
-        }
-
-    }
-
-    // Função utilitária para formatar o CEP removendo caracteres que não são numéricos
-    private fun formatCep(cep: String): String {
-        try {
-            return cep.replace(Regex("[^0-9]"), "")
-        } catch (cepFormatException: CepFormatException) {
-            throw CepFormatException(cep)
         }
 
     }
