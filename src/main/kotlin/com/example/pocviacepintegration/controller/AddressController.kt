@@ -2,6 +2,8 @@ package com.example.pocviacepintegration.controller
 
 import com.example.pocviacepintegration.controller.request.AddressRequest
 import com.example.pocviacepintegration.controller.response.AddressResponse
+import com.example.pocviacepintegration.exceptions.AddressAlreadyExistsException
+import com.example.pocviacepintegration.exceptions.AddressNotFoundException
 import com.example.pocviacepintegration.exceptions.CepFormatException
 import com.example.pocviacepintegration.model.entities.AddressEntity
 import com.example.pocviacepintegration.service.AddressServiceImpl
@@ -17,13 +19,22 @@ class AddressController @Autowired constructor(
 ) {
     @GetMapping("/{cep}")
     fun getAddressByCep(@PathVariable cep: String): ResponseEntity<AddressResponse> {
-        return addressService.getAddress(cep)
+        try {
+            return addressService.getAddress(cep)
+        }catch (addressNotFoundException: AddressNotFoundException){
+            throw AddressNotFoundException(cep)
+        }
     }
 
     @PostMapping
     fun createAddress(@RequestBody addressRequest: AddressRequest): ResponseEntity<AddressEntity> {
        val newAddressRequest =  addressRequest.copy(cep = formatCep(addressRequest.cep))
-        return addressService.saveAddress(newAddressRequest)
+        try {
+            return addressService.saveAddress(newAddressRequest)
+        }catch (adressAlreadyExistsException: AddressAlreadyExistsException){
+            throw AddressAlreadyExistsException(newAddressRequest.cep)
+        }
+
     }
 
     // Função utilitária para formatar o CEP removendo caracteres que não são numéricos
