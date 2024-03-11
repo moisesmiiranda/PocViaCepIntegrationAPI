@@ -8,6 +8,7 @@ import com.example.pocviacepintegration.exceptions.CepFormatException
 import com.example.pocviacepintegration.model.entities.AddressEntity
 import com.example.pocviacepintegration.service.AddressServiceImpl
 import com.example.pocviacepintegration.utils.FormatCep
+import io.swagger.v3.oas.annotations.Operation
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.http.HttpStatus
 import org.springframework.http.ResponseEntity
@@ -19,6 +20,7 @@ class AddressController @Autowired constructor(
     private val addressService: AddressServiceImpl,
     private val formatCep: FormatCep
 ) {
+    @Operation(summary = "Busca um andereço pelo CEP")
     @GetMapping("/{cep}")
     fun getAddressByCep(@PathVariable cep: String): ResponseEntity<AddressResponse> {
         try {
@@ -28,6 +30,7 @@ class AddressController @Autowired constructor(
         }
     }
 
+    @Operation(summary = "Cria um novo endereço")
     @PostMapping
     fun createAddress(@RequestBody addressRequest: AddressRequest): ResponseEntity<AddressEntity> {
        val newAddressRequest =  addressRequest.copy(cep = formatCep.formatCep(addressRequest.cep))
@@ -36,6 +39,5 @@ class AddressController @Autowired constructor(
         }catch (adressAlreadyExistsException: AddressAlreadyExistsException){
             throw AddressAlreadyExistsException(newAddressRequest.cep)
         }
-
     }
 }
