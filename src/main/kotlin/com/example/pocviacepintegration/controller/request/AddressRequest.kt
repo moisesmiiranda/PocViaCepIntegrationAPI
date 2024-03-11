@@ -25,5 +25,9 @@ data class AddressRequest(
     @field:NotNull
     @field:NotEmpty
     @field:NotBlank
-    val uf: String
+    val uf: String,
+    val ibge: String? = null,
+    val gia: String? = null,
+    val ddd: String? = null,
+    val siafi: String? = null
 )
