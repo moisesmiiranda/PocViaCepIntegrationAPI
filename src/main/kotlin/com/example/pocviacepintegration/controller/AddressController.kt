@@ -1,10 +1,12 @@
 package com.example.pocviacepintegration.controller
 
+import com.example.pocviacepintegration.configuration.CepProperties
 import com.example.pocviacepintegration.controller.request.AddressRequest
 import com.example.pocviacepintegration.controller.response.AddressResponse
 import com.example.pocviacepintegration.exceptions.AddressAlreadyExistsException
 import com.example.pocviacepintegration.exceptions.AddressNotFoundException
 import com.example.pocviacepintegration.exceptions.CepFormatException
+import com.example.pocviacepintegration.exceptions.CepLengthException
 import com.example.pocviacepintegration.model.entities.AddressEntity
 import com.example.pocviacepintegration.service.AddressServiceImpl
 import com.example.pocviacepintegration.utils.FormatCep
@@ -18,8 +20,11 @@ import org.springframework.web.bind.annotation.*
 @RequestMapping("/api")
 class AddressController @Autowired constructor(
     private val addressService: AddressServiceImpl,
-    private val formatCep: FormatCep
+    private val formatCep: FormatCep,
+    private val cepProperties: CepProperties
 ) {
+    val cepLengh: Int = cepProperties.cepLength.toInt()
+
     @Operation(summary = "Busca um andereço pelo CEP")
     @GetMapping("/{cep}")
     fun getAddressByCep(@PathVariable cep: String): ResponseEntity<AddressResponse> {
@@ -27,6 +32,8 @@ class AddressController @Autowired constructor(
             return addressService.getAddress(formatCep.formatCep(cep))
         }catch (addressNotFoundException: AddressNotFoundException){
             throw AddressNotFoundException(cep)
+        }catch (cepLengthException: CepFormatException){
+            throw CepFormatException(cep)
         }
     }
 
@@ -38,6 +45,8 @@ class AddressController @Autowired constructor(
             return addressService.saveAddress(newAddressRequest)
         }catch (adressAlreadyExistsException: AddressAlreadyExistsException){
             throw AddressAlreadyExistsException(newAddressRequest.cep)
+        }catch (cepLengthException: CepLengthException){
+            throw CepLengthException(addressRequest.cep)
         }
     }
 

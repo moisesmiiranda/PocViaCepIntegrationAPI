@@ -11,6 +11,8 @@ spring:
   h2:
     console:
       enabled: true
-  cep-length: 8
+  cep:
+    length: ${CEP_LENGTH}
   via-cep:
-    url: "https://viacep.com.br"
+    url: ${VIA_CEP_URL}
+

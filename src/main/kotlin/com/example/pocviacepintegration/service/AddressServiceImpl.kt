@@ -6,6 +6,7 @@ import com.example.pocviacepintegration.controller.response.AddressResponse
 import com.example.pocviacepintegration.dto.AddressDTO
 import com.example.pocviacepintegration.exceptions.AddressAlreadyExistsException
 import com.example.pocviacepintegration.exceptions.AddressNotFoundException
+import com.example.pocviacepintegration.exceptions.CepLengthException
 import com.example.pocviacepintegration.model.entities.AddressEntity
 import com.example.pocviacepintegration.repository.AddressRepository
 import org.springframework.http.HttpStatus
@@ -17,27 +18,35 @@ class AddressServiceImpl(
     private val addressRepository: AddressRepository
 ) : AddressServiceInterface {
     override fun getAddress(cep: String): ResponseEntity<AddressResponse> {
-        val addressEntity = addressRepository.findById(cep)
+        if (cep.length!=8){
+            throw CepLengthException(cep)
+        }else{
+            val addressEntity = addressRepository.findById(cep)
 
-        return if (addressEntity.isPresent) {
-            val entity = addressEntity.get()
-            ResponseEntity.status(HttpStatus.OK).body(AddressMapper.entityToResponse(entity))
-        } else {
-            throw AddressNotFoundException(cep)
+            return if (addressEntity.isPresent) {
+                val entity = addressEntity.get()
+                ResponseEntity.status(HttpStatus.OK).body(AddressMapper.entityToResponse(entity))
+            } else {
+                throw AddressNotFoundException(cep)
+            }
         }
+
     }
 
     override fun saveAddress(addressRequest: AddressRequest): ResponseEntity<AddressEntity> {
         val existingAddress = addressRepository.findById(addressRequest.cep)
 
-        if (existingAddress.isPresent) {
-            throw AddressAlreadyExistsException(addressRequest.cep)
+        if (addressRequest.cep.length !=8){
+            throw CepLengthException(addressRequest.cep)
         }else{
-            val entity = AddressMapper.requestToEntity(addressRequest)
-            val savedEntity = addressRepository.save(entity)
-            return ResponseEntity.status(HttpStatus.CREATED).body(savedEntity)
+            if (existingAddress.isPresent) {
+                throw AddressAlreadyExistsException(addressRequest.cep)
+            }else{
+                val entity = AddressMapper.requestToEntity(addressRequest)
+                val savedEntity = addressRepository.save(entity)
+                return ResponseEntity.status(HttpStatus.CREATED).body(savedEntity)
+            }
         }
-
     }
 
     override fun updateAddress(addressRequest: AddressRequest): ResponseEntity<AddressEntity> {
