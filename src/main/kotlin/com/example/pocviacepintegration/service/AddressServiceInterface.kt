@@ -10,6 +10,6 @@ interface AddressServiceInterface {
 
     fun getAddress(cep: String): ResponseEntity<AddressResponse>
     fun saveAddress(addressRequest: AddressRequest): ResponseEntity<AddressEntity>
-    fun updateAddress(addressDTO: AddressDTO): AddressEntity
-    fun deleteAddress(cep: String)
+    fun updateAddress(addressRequest: AddressRequest): ResponseEntity<AddressEntity>
+    fun deleteAddress(cep: String): ResponseEntity<Unit>
 }

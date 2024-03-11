@@ -40,4 +40,25 @@ class AddressController @Autowired constructor(
             throw AddressAlreadyExistsException(newAddressRequest.cep)
         }
     }
+
+    @Operation(summary = "Atualiza um endereço")
+    @PutMapping
+    fun updateAddress(@RequestBody addressRequest: AddressRequest): ResponseEntity<AddressEntity> {
+        val newAddressRequest =  addressRequest.copy(cep = formatCep.formatCep(addressRequest.cep))
+        try {
+            return addressService.updateAddress(newAddressRequest)
+        }catch (addressNotFoundException: AddressNotFoundException){
+            throw AddressNotFoundException(newAddressRequest.cep)
+        }
+    }
+
+    @Operation(summary = "Deleta um endereço")
+    @DeleteMapping("/{cep}")
+    fun deleteAddress(@PathVariable cep: String) : ResponseEntity<Unit>{
+        try {
+            return addressService.deleteAddress(formatCep.formatCep(cep))
+        }catch (addressNotFoundException: AddressNotFoundException){
+            throw AddressNotFoundException(cep)
+        }
+    }
 }

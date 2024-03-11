@@ -40,11 +40,26 @@ class AddressServiceImpl(
 
     }
 
-    override fun updateAddress(addressDTO: AddressDTO): AddressEntity {
-        TODO("Not yet implemented")
+    override fun updateAddress(addressRequest: AddressRequest): ResponseEntity<AddressEntity> {
+        val existingAddress = addressRepository.findById(addressRequest.cep)
+
+        if (existingAddress.isPresent) {
+            val addressActual = AddressMapper.requestToEntity(addressRequest)
+            val addressUpdated = addressRepository.save(addressActual)
+            return ResponseEntity.status(HttpStatus.CREATED).body(addressUpdated)
+
+        }else{
+            throw AddressNotFoundException(addressRequest.cep)
+        }
     }
 
-    override fun deleteAddress(cep: String) {
-        TODO("Not yet implemented")
+    override fun deleteAddress(cep: String):  ResponseEntity<Unit>  {
+        val existingAddress = addressRepository.findById(cep)
+        if (existingAddress.isPresent) {
+            addressRepository.deleteById(cep)
+            return ResponseEntity.noContent().build()
+        }else{
+            throw AddressNotFoundException(cep)
+        }
     }
 }
