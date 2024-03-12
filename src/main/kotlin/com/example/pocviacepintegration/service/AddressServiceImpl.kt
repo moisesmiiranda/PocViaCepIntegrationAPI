@@ -1,5 +1,6 @@
 package com.example.pocviacepintegration.service
 
+import com.example.pocviacepintegration.configuration.CepProperties
 import com.example.pocviacepintegration.controller.mapper.AddressMapper
 import com.example.pocviacepintegration.controller.request.AddressRequest
 import com.example.pocviacepintegration.controller.response.AddressResponse
@@ -15,10 +16,12 @@ import org.springframework.stereotype.Service
 
 @Service
 class AddressServiceImpl(
-    private val addressRepository: AddressRepository
+    private val addressRepository: AddressRepository,
+    private val cepProperties: CepProperties
 ) : AddressServiceInterface {
     override fun getAddress(cep: String): ResponseEntity<AddressResponse> {
-        if (cep.length!=8){
+
+        if (cep.length!=cepProperties.cepLength.toInt()){
             throw CepLengthException(cep)
         }else{
             val addressEntity = addressRepository.findById(cep)
@@ -36,7 +39,7 @@ class AddressServiceImpl(
     override fun saveAddress(addressRequest: AddressRequest): ResponseEntity<AddressEntity> {
         val existingAddress = addressRepository.findById(addressRequest.cep)
 
-        if (addressRequest.cep.length !=8){
+        if (addressRequest.cep.length != cepProperties.cepLength.toInt()){
             throw CepLengthException(addressRequest.cep)
         }else{
             if (existingAddress.isPresent) {

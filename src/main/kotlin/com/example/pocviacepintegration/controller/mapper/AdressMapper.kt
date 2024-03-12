@@ -26,10 +26,10 @@ object AddressMapper {
             bairro = request.bairro,
             localidade = request.localidade,
             uf = request.uf,
-            ibge = null,
-            gia = null,
-            ddd = null,
-            siafi = null
+            ibge = request.ibge,
+            gia = request.gia,
+            ddd = request.ddd,
+            siafi = request.siafi,
         )
     }
 }

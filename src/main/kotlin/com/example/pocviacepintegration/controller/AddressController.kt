@@ -25,7 +25,7 @@ class AddressController @Autowired constructor(
 ) {
     val cepLengh: Int = cepProperties.cepLength.toInt()
 
-    @Operation(summary = "Busca um andereço pelo CEP")
+    @Operation(summary = "Busca um endereço pelo CEP")
     @GetMapping("/{cep}")
     fun getAddressByCep(@PathVariable cep: String): ResponseEntity<AddressResponse> {
         try {
@@ -43,7 +43,7 @@ class AddressController @Autowired constructor(
        val newAddressRequest =  addressRequest.copy(cep = formatCep.formatCep(addressRequest.cep))
         try {
             return addressService.saveAddress(newAddressRequest)
-        }catch (adressAlreadyExistsException: AddressAlreadyExistsException){
+        }catch (addressAlreadyExistsException: AddressAlreadyExistsException){
             throw AddressAlreadyExistsException(newAddressRequest.cep)
         }catch (cepLengthException: CepLengthException){
             throw CepLengthException(addressRequest.cep)
