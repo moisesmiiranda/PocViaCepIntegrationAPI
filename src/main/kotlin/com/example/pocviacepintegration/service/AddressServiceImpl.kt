@@ -19,7 +19,7 @@ class AddressServiceImpl(
     private val addressRepository: AddressRepository,
     private val cepProperties: CepProperties
 ) : AddressServiceInterface {
-    override fun getAddress(cep: String): ResponseEntity<AddressResponse> {
+    override fun getAddress(cep: String): ResponseEntity<AddressRequest> {
 
         if (cep.length!=cepProperties.cepLength.toInt()){
             throw CepLengthException(cep)
@@ -28,7 +28,7 @@ class AddressServiceImpl(
 
             return if (addressEntity.isPresent) {
                 val entity = addressEntity.get()
-                ResponseEntity.status(HttpStatus.OK).body(AddressMapper.entityToResponse(entity))
+                ResponseEntity.status(HttpStatus.OK).body(AddressMapper.entityToRequest(entity))
             } else {
                 throw AddressNotFoundException(cep)
             }

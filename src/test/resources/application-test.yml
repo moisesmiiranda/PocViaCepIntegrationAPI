@@ -1,0 +1,20 @@
+spring:
+  flyway:
+    enable: false
+  datasource:
+    url: jdbc:h2:mem:poc_viacep_bd
+    driver-class-name: org.h2.Driver
+    username: adm
+    password: 1234
+  jpa:
+    hibernate:
+      ddl-auto: update
+    show-sql: true
+  h2:
+    console:
+      enabled: true
+  cep:
+    length: ${CEP_LENGTH}
+  via-cep:
+    url: ${VIA_CEP_URL}
+

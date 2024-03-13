@@ -21,13 +21,11 @@ import org.springframework.web.bind.annotation.*
 class AddressController @Autowired constructor(
     private val addressService: AddressServiceImpl,
     private val formatCep: FormatCep,
-    private val cepProperties: CepProperties
 ) {
-    val cepLengh: Int = cepProperties.cepLength.toInt()
 
     @Operation(summary = "Busca um endereço pelo CEP")
     @GetMapping("/{cep}")
-    fun getAddressByCep(@PathVariable cep: String): ResponseEntity<AddressResponse> {
+    fun getAddressByCep(@PathVariable cep: String): ResponseEntity<AddressRequest> {
         try {
             return addressService.getAddress(formatCep.formatCep(cep))
         }catch (addressNotFoundException: AddressNotFoundException){

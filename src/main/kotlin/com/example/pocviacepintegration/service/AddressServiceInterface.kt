@@ -7,7 +7,7 @@ import org.springframework.http.ResponseEntity
 
 interface AddressServiceInterface {
 
-    fun getAddress(cep: String): ResponseEntity<AddressResponse>
+    fun getAddress(cep: String): ResponseEntity<AddressRequest>
     fun saveAddress(addressRequest: AddressRequest): ResponseEntity<AddressEntity>
     fun updateAddress(addressRequest: AddressRequest): ResponseEntity<AddressEntity>
     fun deleteAddress(cep: String): ResponseEntity<Unit>

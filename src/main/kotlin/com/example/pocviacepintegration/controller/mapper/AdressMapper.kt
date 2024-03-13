@@ -32,4 +32,19 @@ object AddressMapper {
             siafi = request.siafi,
         )
     }
+
+    fun entityToRequest(entity: AddressEntity): AddressRequest {
+        return AddressRequest(
+            cep = entity.cep,
+            logradouro = entity.logradouro,
+            complemento = entity.complemento,
+            bairro = entity.bairro,
+            localidade = entity.localidade,
+            uf = entity.uf,
+            ibge = entity.ibge,
+            gia = entity.gia,
+            ddd = entity.ddd,
+            siafi = entity.siafi,
+        )
+    }
 }
