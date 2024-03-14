@@ -2,6 +2,7 @@ package com.example.pocviacepintegration.service
 
 import com.example.pocviacepintegration.configuration.CepProperties
 import com.example.pocviacepintegration.controller.mapper.AddressMapper
+import com.example.pocviacepintegration.controller.request.AddressRequest
 import com.example.pocviacepintegration.model.entities.AddressEntity
 import com.example.pocviacepintegration.repository.AddressRepository
 import io.mockk.every
@@ -11,7 +12,6 @@ import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.Assertions.*
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.extension.ExtendWith
-import org.springframework.http.HttpStatus
 import org.springframework.test.context.ActiveProfiles
 import java.util.*
 
@@ -22,11 +22,14 @@ class AddressServiceImplTest {
     private lateinit var cepProperties: CepProperties
     private lateinit var addressService: AddressServiceInterface
     private lateinit var addressEntity: AddressEntity
+    private lateinit var addressMapper:  AddressMapper
+    private lateinit var addressRequest: AddressRequest
 
     @BeforeEach
     fun setup() {
         addressRepository = mockk()
         cepProperties = mockk()
+        addressRequest = mockk()
         addressService = AddressServiceImpl(addressRepository, cepProperties)
 
         addressEntity = AddressEntity(
@@ -43,7 +46,7 @@ class AddressServiceImplTest {
     }
 
     @Test
-    fun `deve retornar endereço quando o CEP é válido`() {
+    fun `deve retornar endereço quando busca por CEP`() {
         // given
         val cep = "12345678"
         every { addressRepository.findById(cep) } returns Optional.of(addressEntity)
@@ -61,6 +64,23 @@ class AddressServiceImplTest {
 
     @Test
     fun saveAddress() {
+        // given
+        every { addressRepository.save(addressEntity) } returns addressEntity
+        every { cepProperties.cepLength } returns "8"
+
+
+        // when
+        val response = addressService.saveAddress(addressMapper.entityToRequest(addressEntity))
+
+        // then
+        val expectedResponse = AddressMapper.entityToRequest(addressEntity)
+
+        assertEquals(expectedResponse, response.body)
+
+
+        // then
+
+        //assertEquals(addressEntity, response.body)
     }
 
     @Test

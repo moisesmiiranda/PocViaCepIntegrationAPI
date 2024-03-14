@@ -17,7 +17,7 @@ import org.springframework.http.ResponseEntity
 import org.springframework.web.bind.annotation.*
 
 @RestController
-@RequestMapping("/api")
+@RequestMapping("/api/v1/address")
 class AddressController @Autowired constructor(
     private val addressService: AddressServiceImpl,
     private val formatCep: FormatCep,
@@ -37,7 +37,7 @@ class AddressController @Autowired constructor(
 
     @Operation(summary = "Cria um novo endereço")
     @PostMapping
-    fun createAddress(@RequestBody addressRequest: AddressRequest): ResponseEntity<AddressEntity> {
+    fun createAddress(@RequestBody addressRequest: AddressRequest): ResponseEntity<AddressRequest> {
        val newAddressRequest =  addressRequest.copy(cep = formatCep.formatCep(addressRequest.cep))
         try {
             return addressService.saveAddress(newAddressRequest)
@@ -51,11 +51,14 @@ class AddressController @Autowired constructor(
     @Operation(summary = "Atualiza um endereço")
     @PutMapping
     fun updateAddress(@RequestBody addressRequest: AddressRequest): ResponseEntity<AddressEntity> {
+        //Substitui o cep recebido para um cep com apenas numeros
         val newAddressRequest =  addressRequest.copy(cep = formatCep.formatCep(addressRequest.cep))
         try {
             return addressService.updateAddress(newAddressRequest)
         }catch (addressNotFoundException: AddressNotFoundException){
             throw AddressNotFoundException(newAddressRequest.cep)
+        }catch  (cepLengthException: CepLengthException){
+            throw CepLengthException(addressRequest.cep)
         }
     }
 
