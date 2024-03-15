@@ -43,6 +43,7 @@ class AddressControllerTest {
     @AfterEach fun tearDown() = addressRepository.deleteAll()
 
 
+    //testes do endPoint create
     @Test
     fun `should create an address and return 201 status`() {
         //given
@@ -89,6 +90,43 @@ class AddressControllerTest {
             .contentType(MediaType.APPLICATION_JSON)
             .content(valueAsString))
             .andExpect(MockMvcResultMatchers.status().isConflict)
+    }
+
+    //Testes do endpoint get
+    @Test
+    fun `should find address by cep an return 200 status`(){
+        //given
+        val address: AddressEntity = addressRepository.save(buildAddressEntity(cep ="01001000"))
+        //when
+        mockMvc.perform(MockMvcRequestBuilders
+            .get("$URL/${address.cep}")
+            .accept(MediaType.APPLICATION_JSON))
+            .andExpect(MockMvcResultMatchers.status().isOk) // valida o status 200
+            //then
+            //validação dos retornos do created
+            .andExpect(MockMvcResultMatchers.jsonPath("$.cep").value("01001000"))
+            .andExpect(MockMvcResultMatchers.jsonPath("$.logradouro").value("Praça da Sé"))
+            .andExpect(MockMvcResultMatchers.jsonPath("$.complemento").value("lado ímpar"))
+            .andExpect(MockMvcResultMatchers.jsonPath("$.bairro").value("Sé"))
+            .andExpect(MockMvcResultMatchers.jsonPath("$.localidade").value("São Paulo"))
+            .andExpect(MockMvcResultMatchers.jsonPath("$.uf").value("SP"))
+            .andExpect(MockMvcResultMatchers.jsonPath("$.ibge").value("3550308"))
+            .andExpect(MockMvcResultMatchers.jsonPath("$.gia").value("1004"))
+            .andExpect(MockMvcResultMatchers.jsonPath("$.ddd").value("11"))
+            .andExpect(MockMvcResultMatchers.jsonPath("$.siafi").value("7107"))
+            .andDo(MockMvcResultHandlers.print()) //exibe informações no console
+    }
+
+    @Test
+    fun `should not find address with invalid CEP and return 400 status` () {
+        //given
+        val invalidCep: String = "00000000"
+        //when
+        mockMvc.perform(MockMvcRequestBuilders
+            .get("$URL/${invalidCep}")
+            .accept(MediaType.APPLICATION_JSON))
+            .andExpect(MockMvcResultMatchers.status().isNotFound) // valida o status 400
+
     }
 
     fun buildAddressEntity(

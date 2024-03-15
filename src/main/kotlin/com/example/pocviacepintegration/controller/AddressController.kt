@@ -1,8 +1,6 @@
 package com.example.pocviacepintegration.controller
 
-import com.example.pocviacepintegration.configuration.CepProperties
 import com.example.pocviacepintegration.controller.request.AddressRequest
-import com.example.pocviacepintegration.controller.response.AddressResponse
 import com.example.pocviacepintegration.exceptions.AddressAlreadyExistsException
 import com.example.pocviacepintegration.exceptions.AddressNotFoundException
 import com.example.pocviacepintegration.exceptions.CepFormatException
@@ -12,7 +10,6 @@ import com.example.pocviacepintegration.service.AddressServiceImpl
 import com.example.pocviacepintegration.utils.FormatCep
 import io.swagger.v3.oas.annotations.Operation
 import org.springframework.beans.factory.annotation.Autowired
-import org.springframework.http.HttpStatus
 import org.springframework.http.ResponseEntity
 import org.springframework.web.bind.annotation.*
 
