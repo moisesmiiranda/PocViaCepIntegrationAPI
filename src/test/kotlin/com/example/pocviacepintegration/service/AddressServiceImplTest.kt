@@ -22,7 +22,6 @@ class AddressServiceImplTest {
     private lateinit var cepProperties: CepProperties
     private lateinit var addressService: AddressServiceInterface
     private lateinit var addressEntity: AddressEntity
-    private lateinit var addressMapper:  AddressMapper
     private lateinit var addressRequest: AddressRequest
 
     @BeforeEach
@@ -30,7 +29,7 @@ class AddressServiceImplTest {
         addressRepository = mockk()
         cepProperties = mockk()
         addressRequest = mockk()
-        addressService = AddressServiceImpl(addressRepository, cepProperties)
+        addressService = AddressServiceImpl(addressRepository)
 
         addressEntity = AddressEntity(
             cep = "12345678",
@@ -56,9 +55,9 @@ class AddressServiceImplTest {
         val response = addressService.findByCep(cep)
 
         // then
-        val expectedResponse = AddressMapper.entityToRequest(addressEntity)
+        val expectedResponse = addressEntity
 
-        assertEquals(expectedResponse, response.body)
+        assertEquals(expectedResponse, response)
     }
 
 
@@ -70,12 +69,12 @@ class AddressServiceImplTest {
 
 
         // when
-        val response = addressService.saveAddress(addressMapper.entityToRequest(addressEntity))
+        val response = addressService.save(addressEntity)
 
         // then
-        val expectedResponse = AddressMapper.entityToRequest(addressEntity)
+        val expectedResponse = addressEntity
 
-        assertEquals(expectedResponse, response.body)
+        assertEquals(expectedResponse, response)
 
 
         // then
