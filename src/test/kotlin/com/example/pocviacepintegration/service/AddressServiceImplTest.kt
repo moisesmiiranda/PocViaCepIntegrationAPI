@@ -53,7 +53,7 @@ class AddressServiceImplTest {
         every { cepProperties.cepLength } returns "8"
 
         // when
-        val response = addressService.getAddress(cep)
+        val response = addressService.findByCep(cep)
 
         // then
         val expectedResponse = AddressMapper.entityToRequest(addressEntity)

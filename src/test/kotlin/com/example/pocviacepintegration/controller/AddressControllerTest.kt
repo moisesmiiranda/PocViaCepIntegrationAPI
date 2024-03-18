@@ -129,6 +129,36 @@ class AddressControllerTest {
 
     }
 
+    @Test
+    fun `should delete address by CEP and return 204 status`() {
+        //given
+        val address: AddressEntity = addressRepository.save(buildAddressEntity(cep="01001000"))
+        //when
+        mockMvc.perform(MockMvcRequestBuilders
+            .delete("$URL/${address.cep}")
+            .accept(MediaType.APPLICATION_JSON))
+            .andExpect(MockMvcResultMatchers.status().isNoContent)
+    }
+
+    @Test
+    fun `should not delete address by CEP and return 404 status`() {
+        //given
+        val invalidCep: String = "00000000"
+        //when
+        mockMvc.perform(MockMvcRequestBuilders
+            .delete("$URL/${invalidCep}")
+            .accept(MediaType.APPLICATION_JSON))
+            .andExpect(MockMvcResultMatchers.status().isNotFound)
+            .andDo(MockMvcResultHandlers.print())
+    }
+
+    @Test
+    fun `should update an address by PUT EndPoint and return 200 status` () {
+        //given
+
+
+    }
+
     fun buildAddressEntity(
         cep: String = "01001-000",
         logradouro: String = "Praça da Sé",

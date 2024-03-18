@@ -7,9 +7,9 @@ import com.example.pocviacepintegration.model.entities.AddressEntity
 
 object AddressMapper {
 
-    fun entityToResponse(entity: AddressEntity): AddressResponse {
+    fun toResponse(entity: AddressEntity): AddressResponse {
         return AddressResponse(
-            cep = entity.cep,
+            cep =entity.cep,
             logradouro = entity.logradouro,
             complemento = entity.complemento,
             bairro = entity.bairro,
