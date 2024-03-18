@@ -13,6 +13,7 @@ import com.fasterxml.jackson.databind.ObjectMapper
 import org.springframework.http.HttpStatus
 import org.springframework.http.ResponseEntity
 import org.springframework.stereotype.Service
+import java.util.*
 
 @Service
 class AddressServiceImpl(
@@ -26,6 +27,9 @@ class AddressServiceImpl(
 
     override fun findByCep(cep: String): AddressEntity = this.addressRepository.findById(cep).orElseThrow { AddressNotFoundException(cep) }
 
+    override fun findById(id: String): Optional<AddressEntity> {
+        return addressRepository.findById(id)
+    }
     override fun delete(cep: String) {
         val address: AddressEntity = this.findByCep(cep)
         val addressExist = this.addressRepository.findById(address.cep).isPresent

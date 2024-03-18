@@ -16,6 +16,7 @@ import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.http.HttpStatus
 import org.springframework.http.ResponseEntity
 import org.springframework.web.bind.annotation.*
+import java.util.*
 
 @RestController
 @RequestMapping("/api/v1/address")
@@ -44,23 +45,25 @@ class AddressController @Autowired constructor(
     @Operation(summary = "Cria um novo endereço")
     @PostMapping
     fun createAddress(@RequestBody addressRequest: AddressRequest): ResponseEntity<AddressResponse> {
-
+            val cepFormated = formatCep.formatCep(addressRequest.cep)
 
            try {
-               if (formatCep.formatCep(addressRequest.cep).length != 8)
+               if (cepFormated.length != 8)
                    throw CepLengthException(addressRequest.cep)
-               val existingAddress: AddressEntity = (addressService.findByCep(formatCep.formatCep(addressRequest.cep)))
-               if(existingAddress == null)
+
+               if (addressService.findById(cepFormated).isPresent)
+                   throw AddressAlreadyExistsException(addressRequest.cep)
+
                val newAddressRequest =  addressRequest.copy(cep = formatCep.formatCep(addressRequest.cep))
 
-               val address = addressMapper.requestToEntity(newAddressRequest)
+               val addressToBD = addressMapper.requestToEntity(newAddressRequest)
 
-               val addressResponse: AddressResponse = addressMapper.toResponse(addressService.save(address))
+               val addressResponse: AddressResponse = addressMapper.toResponse(addressService.save(addressToBD))
 
                return ResponseEntity<AddressResponse>(addressResponse, HttpStatus.CREATED)
 
            }catch (addressAlreadyExistsException: AddressAlreadyExistsException){
-               throw AddressAlreadyExistsException(newAddressRequest.cep)
+               throw AddressAlreadyExistsException(addressRequest.cep)
            }catch (cepLengthException: CepLengthException){
                throw CepLengthException(addressRequest.cep)
            }
@@ -73,10 +76,10 @@ class AddressController @Autowired constructor(
         @RequestBody @Valid addressRequest: AddressRequest):
             ResponseEntity<AddressResponse> {
         try {
-            val address: AddressResponse = addressService.findByCep(formatCep.formatCep(cep))
-            return ResponseEntity<AddressResponse>(HttpStatus.OK).body(addressResponse)
+            val addressResponse: AddressResponse = addressMapper.toResponse(addressService.findByCep(formatCep.formatCep(cep)))
+            return ResponseEntity<AddressResponse>(addressResponse,HttpStatus.OK)
         }catch (addressNotFoundException: AddressNotFoundException){
-            throw AddressNotFoundException(newAddressRequest.cep)
+            throw AddressNotFoundException(addressRequest.cep)
         }catch  (cepLengthException: CepLengthException){
             throw CepLengthException(addressRequest.cep)
         }
@@ -86,7 +89,8 @@ class AddressController @Autowired constructor(
     @DeleteMapping("/{cep}")
     fun deleteAddress(@PathVariable cep: String) : ResponseEntity<Unit>{
         try {
-            return addressService.deleteAddress(formatCep.formatCep(cep))
+            val addressResponse = addressService.delete(formatCep.formatCep(cep))
+            return ResponseEntity<Unit>(addressResponse,HttpStatus.NO_CONTENT)
         }catch (addressNotFoundException: AddressNotFoundException){
             throw AddressNotFoundException(cep)
         }

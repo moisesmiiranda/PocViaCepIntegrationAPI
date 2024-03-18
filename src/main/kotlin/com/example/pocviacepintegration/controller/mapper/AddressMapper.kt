@@ -3,8 +3,9 @@ package com.example.pocviacepintegration.controller.mapper
 import com.example.pocviacepintegration.controller.request.AddressRequest
 import com.example.pocviacepintegration.controller.response.AddressResponse
 import com.example.pocviacepintegration.model.entities.AddressEntity
+import org.springframework.stereotype.Component
 
-
+@Component
 object AddressMapper {
 
     fun toResponse(entity: AddressEntity): AddressResponse {
