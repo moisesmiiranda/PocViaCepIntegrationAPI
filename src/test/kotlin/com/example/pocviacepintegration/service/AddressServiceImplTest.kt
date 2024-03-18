@@ -79,7 +79,7 @@ class AddressServiceImplTest {
 
         // then
 
-        //assertEquals(addressEntity, response.body)
+        assertEquals(addressEntity, response)
     }
 
     @Test

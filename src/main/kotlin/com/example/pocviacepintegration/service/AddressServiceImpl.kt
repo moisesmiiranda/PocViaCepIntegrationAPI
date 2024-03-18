@@ -20,8 +20,6 @@ class AddressServiceImpl(
     private val addressRepository: AddressRepository
 ) : AddressServiceInterface {
     override fun save(addressEntity: AddressEntity): AddressEntity {
-        val addressExist = this.addressRepository.findById(addressEntity.cep).isPresent
-        if (addressExist) throw AddressAlreadyExistsException(addressEntity.cep)
         return this.addressRepository.save(addressEntity)
     }
 
