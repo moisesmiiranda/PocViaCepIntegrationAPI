@@ -24,7 +24,7 @@ class RestExceptionHandler {
         }
         return ResponseEntity(
             ExceptionDetails(
-                title = "Bad Request! Consult the documentation.",
+                title = "Bad Request! O campo obrigatório não pode ser vazio.",
                 timestamp = LocalDateTime.now(),
                 status = HttpStatus.BAD_REQUEST.value(),
                 exception = ex.javaClass.name,
@@ -37,7 +37,7 @@ class RestExceptionHandler {
     fun handlerValidException(ex: DataAccessException): ResponseEntity<ExceptionDetails> {
         return ResponseEntity(
             ExceptionDetails(
-                title = "Conflict! Consult the documentation.",
+                title = "Conflict! Não foi possível salvar.",
                 timestamp = LocalDateTime.now(),
                 status = HttpStatus.CONFLICT.value(),
                 exception = ex.javaClass.name,
@@ -50,12 +50,12 @@ class RestExceptionHandler {
     fun handlerValidException(ex: AddressAlreadyExistsException): ResponseEntity<ExceptionDetails> {
         return ResponseEntity(
             ExceptionDetails(
-                title = "Bad Request! Já existe um endereço associado a este cep!.",
+                title = "Conflict! Já existe um endereço associado a este cep!.",
                 timestamp = LocalDateTime.now(),
-                status = HttpStatus.BAD_REQUEST.value(),
+                status = HttpStatus.CONFLICT.value(),
                 exception = ex.javaClass.name,
                 details = mutableMapOf(ex.cause.toString() to ex.message)
-            ), HttpStatus.BAD_REQUEST
+            ), HttpStatus.CONFLICT
         )
     }
 
@@ -63,7 +63,7 @@ class RestExceptionHandler {
     fun handlerValidException(ex: AddressNotFoundException): ResponseEntity<ExceptionDetails> {
         return ResponseEntity(
             ExceptionDetails(
-                title = "Not found! Não foi encontrado um endereço associado a este cep!.",
+                title = "Not found! Não foi encontrado um endereço associado a este cep!",
                 timestamp = LocalDateTime.now(),
                 status = HttpStatus.NOT_FOUND.value(),
                 exception = ex.javaClass.name,
@@ -72,4 +72,16 @@ class RestExceptionHandler {
         )
     }
 
+    @ExceptionHandler(CepLengthException::class)
+    fun handlerValidException(ex: CepLengthException): ResponseEntity<ExceptionDetails> {
+        return ResponseEntity(
+            ExceptionDetails(
+                title = "Bad request! O Cep precisa ser numérico de 8 dígitos!",
+                timestamp = LocalDateTime.now(),
+                status = HttpStatus.BAD_REQUEST.value(),
+                exception = ex.javaClass.name,
+                details = mutableMapOf(ex.cause.toString() to ex.message)
+            ), HttpStatus.BAD_REQUEST
+        )
+    }
 }

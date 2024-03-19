@@ -63,9 +63,9 @@ class AddressController @Autowired constructor(
     }
 
     @Operation(summary = "Atualiza um endereço")
-    @PutMapping
+    @PutMapping("/{cep}")
     fun updateAddress(
-        @RequestParam(value = "cep") cep: String,
+        @PathVariable(value = "cep") cep: String,
         @RequestBody @Valid addressRequest: AddressRequest):
             ResponseEntity<AddressResponse> {
         try {

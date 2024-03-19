@@ -1,4 +1,4 @@
-package com.example.pocviacepintegration.controller
+package com.example.pocviacepintegration.integration.controller
 
 import com.example.pocviacepintegration.controller.mapper.AddressMapper
 import com.example.pocviacepintegration.controller.request.AddressRequest
@@ -71,10 +71,6 @@ class AddressControllerTest {
             .andExpect(MockMvcResultMatchers.jsonPath("$.bairro").value("Sé"))
             .andExpect(MockMvcResultMatchers.jsonPath("$.localidade").value("São Paulo"))
             .andExpect(MockMvcResultMatchers.jsonPath("$.uf").value("SP"))
-            .andExpect(MockMvcResultMatchers.jsonPath("$.ibge").value("3550308"))
-            .andExpect(MockMvcResultMatchers.jsonPath("$.gia").value("1004"))
-            .andExpect(MockMvcResultMatchers.jsonPath("$.ddd").value("11"))
-            .andExpect(MockMvcResultMatchers.jsonPath("$.siafi").value("7107"))
             .andDo(MockMvcResultHandlers.print()) //exibe informações no console
     }
 
@@ -110,10 +106,6 @@ class AddressControllerTest {
             .andExpect(MockMvcResultMatchers.jsonPath("$.bairro").value("Sé"))
             .andExpect(MockMvcResultMatchers.jsonPath("$.localidade").value("São Paulo"))
             .andExpect(MockMvcResultMatchers.jsonPath("$.uf").value("SP"))
-            .andExpect(MockMvcResultMatchers.jsonPath("$.ibge").value("3550308"))
-            .andExpect(MockMvcResultMatchers.jsonPath("$.gia").value("1004"))
-            .andExpect(MockMvcResultMatchers.jsonPath("$.ddd").value("11"))
-            .andExpect(MockMvcResultMatchers.jsonPath("$.siafi").value("7107"))
             .andDo(MockMvcResultHandlers.print()) //exibe informações no console
     }
 
@@ -155,7 +147,8 @@ class AddressControllerTest {
     @Test
     fun `should update an address by PUT EndPoint and return 200 status` () {
         //given
-
+        val address: AddressEntity = addressRepository.save(buildAddressEntity(cep="01001000"))
+        val addressEntity: AddressEntity = buildAddressEntity(cep = "01001000")
 
     }
 

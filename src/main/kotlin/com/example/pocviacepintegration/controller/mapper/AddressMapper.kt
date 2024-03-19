@@ -8,8 +8,8 @@ import org.springframework.stereotype.Component
 @Component
 object AddressMapper {
 
-    fun toResponse(entity: AddressEntity): AddressResponse {
-        return AddressResponse(
+    fun toResponse(entity: AddressEntity): AddressResponse =
+        AddressResponse(
             cep =entity.cep,
             logradouro = entity.logradouro,
             complemento = entity.complemento,
@@ -17,10 +17,9 @@ object AddressMapper {
             localidade = entity.localidade,
             uf = entity.uf
         )
-    }
 
-    fun requestToEntity(request: AddressRequest): AddressEntity {
-        return AddressEntity(
+    fun requestToEntity(request: AddressRequest): AddressEntity =
+        AddressEntity(
             cep = request.cep,
             logradouro = request.logradouro,
             complemento = request.complemento,
@@ -32,20 +31,4 @@ object AddressMapper {
             ddd = request.ddd,
             siafi = request.siafi,
         )
-    }
-
-    fun entityToRequest(entity: AddressEntity): AddressRequest {
-        return AddressRequest(
-            cep = entity.cep,
-            logradouro = entity.logradouro,
-            complemento = entity.complemento,
-            bairro = entity.bairro,
-            localidade = entity.localidade,
-            uf = entity.uf,
-            ibge = entity.ibge,
-            gia = entity.gia,
-            ddd = entity.ddd,
-            siafi = entity.siafi,
-        )
-    }
 }
