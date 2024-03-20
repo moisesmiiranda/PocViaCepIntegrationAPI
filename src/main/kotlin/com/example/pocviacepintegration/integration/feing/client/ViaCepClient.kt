@@ -7,7 +7,7 @@ import org.springframework.web.bind.annotation.GetMapping
 import org.springframework.web.bind.annotation.PathVariable
 
 
-@FeignClient(name = "viaCepClient", url = "\$via-cep.url")
+@FeignClient(name = "viaCepClient", url = "https://viacep.com.br/")
 interface ViaCepClient {
     @GetMapping("/ws/{cep}/json")
     fun getCepFromViaCep(@PathVariable cep: String): ResponseEntity<AddressResponseViaCep>

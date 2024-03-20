@@ -14,5 +14,5 @@ spring:
   cep:
     length: ${CEP_LENGTH}
   via-cep:
-    url: https://viacep.com.br
+    url: https://viacep.com.br/
 

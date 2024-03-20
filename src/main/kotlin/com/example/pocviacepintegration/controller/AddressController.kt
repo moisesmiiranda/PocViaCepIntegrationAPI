@@ -69,11 +69,25 @@ class AddressController @Autowired constructor(
         @RequestBody @Valid addressRequest: AddressRequest):
             ResponseEntity<AddressResponse> {
         try {
-            val addressResponse: AddressResponse = addressMapper.toResponse(addressService.findByCep(formatCep.formatCep(cep)))
-            return ResponseEntity<AddressResponse>(addressResponse,HttpStatus.OK)
-        }catch (addressNotFoundException: AddressNotFoundException){
+            // Verifica se o endereço existe
+            val existingAddress = addressService.findByCep(formatCep.formatCep(cep))
+
+            // Atualiza os dados do endereço existente com os dados fornecidos na solicitação
+            existingAddress.logradouro = addressRequest.logradouro
+            existingAddress.complemento = addressRequest.complemento
+            existingAddress.bairro = addressRequest.bairro
+            existingAddress.localidade = addressRequest.localidade
+            existingAddress.uf = addressRequest.uf
+
+            // Salva o endereço atualizado
+            val updatedAddress = addressService.save(existingAddress)
+
+            // Converte o endereço atualizado para uma resposta e retorna com status OK
+            val addressResponse: AddressResponse = addressMapper.toResponse(updatedAddress)
+            return ResponseEntity<AddressResponse>(addressResponse, HttpStatus.OK)
+        } catch (addressNotFoundException: AddressNotFoundException) {
             throw AddressNotFoundException(addressRequest.cep)
-        }catch  (cepLengthException: CepLengthException){
+        } catch (cepLengthException: CepLengthException) {
             throw CepLengthException(addressRequest.cep)
         }
     }
