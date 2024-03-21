@@ -57,7 +57,9 @@ Antes de executar esta aplicação, verifique se você possui o seguinte ambient
 
 A documentação da API pode ser acessada em `http://localhost:8080/swagger-ui/index.html`, onde você encontrará informações sobre os endpoints disponíveis e como usá-los.
 
+## ⚒️👽 Testes
 
-
-
-
+Para executar os testes automatizados, você pode usar o seguinte comando Gradle dentro do diretório raíz do projeto:
+```bash
+./gradlew test
+```
