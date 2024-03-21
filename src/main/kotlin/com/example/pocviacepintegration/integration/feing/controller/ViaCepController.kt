@@ -5,6 +5,7 @@ import com.example.pocviacepintegration.exceptions.AddressNotFoundException
 import com.example.pocviacepintegration.exceptions.CepLengthException
 import com.example.pocviacepintegration.integration.feing.client.ViaCepClient
 import com.example.pocviacepintegration.integration.feing.response.AddressResponseViaCep
+import com.example.pocviacepintegration.utils.FormatCep
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.http.ResponseEntity
 import org.springframework.web.bind.annotation.GetMapping
@@ -16,11 +17,12 @@ import org.springframework.web.bind.annotation.RestController
 @RequestMapping("/api/viacep")
 class ViaCepController @Autowired constructor(
     private val viaCepService: ViaCepClient,
-    private val cepProperties: CepProperties
+    private val cepProperties: CepProperties,
+    private val formatCep: FormatCep
 ) {
     @GetMapping("/{cep}")
     fun getAddressFromViaCep(@PathVariable cep: String): ResponseEntity<AddressResponseViaCep> {
-        if (cep.length != cepProperties.cepLength.toInt()){
+        if (formatCep.formatCep(cep).length != cepProperties.cepLength.toInt()){
             throw CepLengthException(cep)
         }
 

@@ -1,14 +1,11 @@
 package com.example.pocviacepintegration.integration.controller
 
-import com.example.pocviacepintegration.controller.mapper.AddressMapper
-import com.example.pocviacepintegration.controller.request.AddressRequest
 import com.example.pocviacepintegration.model.entities.AddressEntity
 import com.example.pocviacepintegration.repository.AddressRepository
 import com.fasterxml.jackson.databind.ObjectMapper
 import org.junit.jupiter.api.AfterEach
 import org.junit.jupiter.api.Test
 
-import org.junit.jupiter.api.Assertions.*
 import org.junit.jupiter.api.BeforeEach
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc
@@ -75,6 +72,7 @@ class AddressControllerTest {
     }
 
 
+
     @Test
     fun `should not created address with same cep and return 409 status`(){
         //given
@@ -122,13 +120,54 @@ class AddressControllerTest {
     }
 
     @Test
+    fun `should update address by CEP and return 200 status`() {
+        //given
+        val address: AddressEntity = addressRepository.save(buildAddressEntity(cep = "01001000"))
+        val addressUpdate: AddressEntity = buildAddressUpdate(cep = "01001000")
+        val valueAsString: String = objectMapper.writeValueAsString(addressUpdate)
+        //when
+        mockMvc.perform(
+            MockMvcRequestBuilders
+                .put("$URL/${address.cep}")
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(valueAsString)
+        )
+            .andExpect(MockMvcResultMatchers.status().isOk)
+            .andExpect(MockMvcResultMatchers.jsonPath("$.cep").value("01001000"))
+            .andExpect(MockMvcResultMatchers.jsonPath("$.logradouro").value("Praça General Tibúrcio"))
+            .andExpect(MockMvcResultMatchers.jsonPath("$.complemento").value("lado PAR "))
+            .andExpect(MockMvcResultMatchers.jsonPath("$.bairro").value("Sé"))
+            .andExpect(MockMvcResultMatchers.jsonPath("$.localidade").value("São Paulo"))
+            .andExpect(MockMvcResultMatchers.jsonPath("$.uf").value("CE"))
+
+    }
+
+    @Test
+    fun `should not update address by CEP and return 404 status`() {
+        //given
+        val invalidCep: String = "00000000"
+        val addressUpdate: AddressEntity = buildAddressUpdate(cep = "01001000")
+        val valueAsString: String = objectMapper.writeValueAsString(addressUpdate)
+        //when
+        mockMvc.perform(
+            MockMvcRequestBuilders
+                .put("$URL/${invalidCep}")
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(valueAsString)
+        )
+            .andExpect(MockMvcResultMatchers.status().isNotFound)
+    }
+
+    @Test
     fun `should delete address by CEP and return 204 status`() {
         //given
-        val address: AddressEntity = addressRepository.save(buildAddressEntity(cep="01001000"))
+        val address: AddressEntity = addressRepository.save(buildAddressEntity(cep = "01001000"))
         //when
-        mockMvc.perform(MockMvcRequestBuilders
-            .delete("$URL/${address.cep}")
-            .accept(MediaType.APPLICATION_JSON))
+        mockMvc.perform(
+            MockMvcRequestBuilders
+                .delete("$URL/${address.cep}")
+                .accept(MediaType.APPLICATION_JSON)
+        )
             .andExpect(MockMvcResultMatchers.status().isNoContent)
     }
 
@@ -137,9 +176,11 @@ class AddressControllerTest {
         //given
         val invalidCep: String = "00000000"
         //when
-        mockMvc.perform(MockMvcRequestBuilders
-            .delete("$URL/${invalidCep}")
-            .accept(MediaType.APPLICATION_JSON))
+        mockMvc.perform(
+            MockMvcRequestBuilders
+                .delete("$URL/${invalidCep}")
+                .accept(MediaType.APPLICATION_JSON)
+        )
             .andExpect(MockMvcResultMatchers.status().isNotFound)
             .andDo(MockMvcResultHandlers.print())
     }
@@ -152,6 +193,31 @@ class AddressControllerTest {
         bairro: String = "Sé",
         localidade: String = "São Paulo",
         uf: String = "SP",
+        ibge: String = "3550308",
+        gia: String = "1004",
+        ddd: String = "11",
+        siafi: String = "7107"
+    ) = AddressEntity(
+        cep = cep,
+        logradouro = logradouro,
+        complemento = complemento,
+        bairro = bairro,
+        localidade = localidade,
+        uf = uf,
+        ibge = ibge,
+        gia = gia,
+        ddd = ddd,
+        siafi = siafi
+    )
+
+
+    fun buildAddressUpdate(
+        cep: String = "01001000",
+        logradouro: String = "Praça General Tibúrcio",
+        complemento: String = "lado PAR ",
+        bairro: String = "Sé",
+        localidade: String = "São Paulo",
+        uf: String = "CE",
         ibge: String = "3550308",
         gia: String = "1004",
         ddd: String = "11",

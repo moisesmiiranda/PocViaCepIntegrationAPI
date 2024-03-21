@@ -12,17 +12,16 @@ import org.springframework.boot.test.context.SpringBootTest
 import org.springframework.http.ResponseEntity
 
 @SpringBootTest
-@WireMockTest(httpPort = 8089) // Porta onde o WireMock deve ser iniciado
+@WireMockTest(httpPort = 8089)
 class ViaCepControllerTest {
 
     @Autowired
     private lateinit var viaCepController: ViaCepController
 
-
     @Test
     fun `test getAddressFromViaCep with valid cep`() {
-        val cep = "01001000"
-        val expectedResponse = AddressResponseViaCep(cep, "logradouro", "complemento", "bairro", "localidade", "uf", "ibge", "gia", "ddd", "siafi")
+        val cep = "01001-000"
+        val expectedResponse = AddressResponseViaCep(cep, "Praça da Sé", "lado ímpar", "Sé", "São Paulo", "SP", "3550308", "1004", "11", "7107")
 
         stubFor(get(urlEqualTo("/ws/$cep/json"))
             .willReturn(aResponse()
