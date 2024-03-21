@@ -144,13 +144,6 @@ class AddressControllerTest {
             .andDo(MockMvcResultHandlers.print())
     }
 
-    @Test
-    fun `should update an address by PUT EndPoint and return 200 status` () {
-        //given
-        val address: AddressEntity = addressRepository.save(buildAddressEntity(cep="01001000"))
-        val addressEntity: AddressEntity = buildAddressEntity(cep = "01001000")
-
-    }
 
     fun buildAddressEntity(
         cep: String = "01001-000",
