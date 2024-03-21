@@ -49,20 +49,14 @@ Antes de executar esta aplicação, verifique se você possui o seguinte ambient
     cd PocViaCepIntegrationAPI
     ```
 
-4. Execute o seguinte comando Gradle para compilar e iniciar a aplicação:
+4. A aplicação pode ser executada pelo run da própria IDE
 
-    ```bash
-    ./gradlew bootRun
-    ```
 5. Após a inicialização bem-sucedida, a aplicação estará disponível em `http://localhost:8080`.
 
 ## 🤓📗 Documentação da API
 
 A documentação da API pode ser acessada em `http://localhost:8080/swagger-ui/index.html`, onde você encontrará informações sobre os endpoints disponíveis e como usá-los.
 
-## ⚒️👽 Testes
-
-Para executar os testes automatizados, você pode usar o seguinte comando Gradle:
 
 
 
