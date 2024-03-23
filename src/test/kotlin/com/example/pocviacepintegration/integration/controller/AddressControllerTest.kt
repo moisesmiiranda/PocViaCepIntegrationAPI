@@ -108,14 +108,14 @@ class AddressControllerTest {
     }
 
     @Test
-    fun `should not find address with invalid CEP and return 400 status` () {
+    fun `should not find address with invalid CEP and return 404 status` () {
         //given
         val invalidCep: String = "00000000"
         //when
         mockMvc.perform(MockMvcRequestBuilders
             .get("$URL/${invalidCep}")
             .accept(MediaType.APPLICATION_JSON))
-            .andExpect(MockMvcResultMatchers.status().isNotFound) // valida o status 400
+            .andExpect(MockMvcResultMatchers.status().isNotFound) // valida o status 404
 
     }
 
@@ -145,7 +145,7 @@ class AddressControllerTest {
     @Test
     fun `should not update address by CEP and return 404 status`() {
         //given
-        val invalidCep: String = "00000000"
+        val invalidCep = "00000000"
         val addressUpdate: AddressEntity = buildAddressUpdate(cep = "01001000")
         val valueAsString: String = objectMapper.writeValueAsString(addressUpdate)
         //when
